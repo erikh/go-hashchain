@@ -31,7 +31,7 @@ if err != nil {
 }
 
 // and one more time, for posterity's sake
-sum, err := c1.Add(bytes.NewBuffer([]byte("buffer2")), sha512.New())
+sum, err = c1.Add(bytes.NewBuffer([]byte("buffer2")), sha512.New())
 if err != nil {
   log.Fatal(err)
 }
@@ -42,13 +42,12 @@ if err != nil {
 }
 
 // and now, we'll generate a mismatch
-sum, err := c1.Add(bytes.NewBuffer([]byte("buffer1-1")), sha512.New())
+sum, err = c1.Add(bytes.NewBuffer([]byte("buffer1-1")), sha512.New())
 if err != nil {
   log.Fatal(err)
 }
 
-// and now, we'll generate a mismatch
-sum, err := c2.Add(bytes.NewBuffer([]byte("buffer1-2")), sha512.New())
+sum, err = c2.Add(bytes.NewBuffer([]byte("buffer1-2")), sha512.New())
 if err != nil {
   log.Fatal(err)
 }
