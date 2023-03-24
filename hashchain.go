@@ -90,7 +90,7 @@ func (c *Chain) LastMatch(c2 *Chain) (*Chain, error) {
 		return nil, ErrNoMatch
 	}
 
-	return c2, nil
+	return &Chain{}, nil // all match, so return an empty chain
 }
 
 // Sum the entire chain's sums. Useful for quickly determining a mismatch.

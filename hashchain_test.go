@@ -98,11 +98,11 @@ func TestMatch(t *testing.T) {
 		t.Fatal("FirstMatch did not equal chain1")
 	}
 
-	if chain, err := chain1.LastMatch(chain2); err != nil || !reflect.DeepEqual(chain, chain2) {
+	if chain, err := chain1.LastMatch(chain2); err != nil || !reflect.DeepEqual(chain, &Chain{}) {
 		t.Fatal("LastMatch did not equal end of chain2")
 	}
 
-	if chain, err := chain2.LastMatch(chain1); err != nil || !reflect.DeepEqual(chain, chain1) {
+	if chain, err := chain2.LastMatch(chain1); err != nil || !reflect.DeepEqual(chain, &Chain{}) {
 		t.Fatal("LastMatch did not equal end of chain1")
 	}
 
