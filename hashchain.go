@@ -44,6 +44,7 @@ func (c *Chain) AddInline(w io.Writer, r io.Reader, h hash.Hash) (string, error)
 	}
 
 	sum := h.Sum(nil)
+	c.chain = append(c.chain, sum)
 
 	return hex.EncodeToString(sum), nil
 }
