@@ -34,6 +34,20 @@ func (c *Chain) Add(r io.Reader, h hash.Hash) (string, error) {
 	return hex.EncodeToString(sum), nil
 }
 
+// Same as Add(), but also write it to the writer in the process. The sum is
+// returned along with any error.
+func (c *Chain) AddInline(w io.Writer, r io.Reader, h hash.Hash) (string, error) {
+	reader := io.TeeReader(r, h)
+
+	if _, err := io.Copy(w, reader); err != nil {
+		return "", fmt.Errorf("Could not copy from reader: %w", err)
+	}
+
+	sum := h.Sum(nil)
+
+	return hex.EncodeToString(sum), nil
+}
+
 // Obtain the list of sums this chain possesses. Useful for marshaling.
 func (c *Chain) AllSums() []string {
 	res := []string{}

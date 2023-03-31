@@ -56,6 +56,21 @@ func TestBasic(t *testing.T) {
 	if !reflect.DeepEqual(c.AllSums(), []string{expected1, expected2}) {
 		t.Fatal("AllSums did not yield the correct result")
 	}
+
+	out := bytes.NewBuffer(nil)
+
+	sum, err = c.AddInline(out, bytes.NewBuffer([]byte("buffer")), sha512.New())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if sum != expected1 {
+		t.Fatal("expected sum did not match")
+	}
+
+	if out.String() != "buffer" {
+		t.Fatal("output was not yielded")
+	}
 }
 
 func TestMatch(t *testing.T) {
