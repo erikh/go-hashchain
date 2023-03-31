@@ -3,6 +3,8 @@ package hashchain
 import (
 	"bytes"
 	"crypto/sha512"
+	"encoding/json"
+	"io"
 	"reflect"
 	"testing"
 )
@@ -70,6 +72,31 @@ func TestBasic(t *testing.T) {
 
 	if out.String() != "buffer" {
 		t.Fatal("output was not yielded")
+	}
+
+	str := struct {
+		stuff int
+	}{
+		stuff: 1,
+	}
+
+	w := bytes.NewBuffer(nil)
+
+	rdr, wtr := io.Pipe()
+	enc := json.NewEncoder(wtr)
+	errChan := make(chan error, 1)
+	go func() {
+		_, err := c.AddInline(w, rdr, sha512.New())
+		errChan <- err
+	}()
+
+	if err := enc.Encode(str); err != nil {
+		t.Fatal(err)
+	}
+
+	wtr.Close()
+	if err := <-errChan; err != nil {
+		t.Fatal(err)
 	}
 }
 
