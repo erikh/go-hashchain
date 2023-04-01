@@ -13,11 +13,38 @@ var (
 	ErrNoMatch = errors.New("Chains do not match")
 )
 
+// A SumSet is a collection of sums, in order.
+type SumSet [][]byte
+
 // Chain is a chain of sums iconifying generational changes to a single file,
 // so that you can trace the origin of divergence later.
 // Add to the Chain with the Add() function.
 type Chain struct {
-	chain [][]byte
+	chain SumSet
+}
+
+// New creates a hashchain from an existing set of sums. If nil is provided, a
+// new chain will be created.
+func New(chain SumSet) *Chain {
+	if chain == nil {
+		chain = SumSet{}
+	}
+
+	return &Chain{chain: chain}
+}
+
+func NewFromString(chain []string) (*Chain, error) {
+	newChain := SumSet{}
+
+	for _, item := range chain {
+		byt, err := hex.DecodeString(item)
+		if err != nil {
+			return nil, fmt.Errorf("While decoding sum: %w", err)
+		}
+		newChain = append(newChain, byt)
+	}
+
+	return New(newChain), nil
 }
 
 // Add a file's sum to the chain. Returns the hex encoded sum for convenience.

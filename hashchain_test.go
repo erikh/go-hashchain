@@ -17,7 +17,7 @@ func TestBasic(t *testing.T) {
 		sumExpected2 = "3655e269134d0d6c322eaf489492e842481e4bfbff5dd664903bf7d904791fd29038c44992f27160fccb05181926090231b542d88b71d10e285e9c7d9cdde941"
 	)
 
-	c := &Chain{}
+	c := New(nil)
 
 	sum, err := c.Add(bytes.NewBuffer([]byte("buffer")), sha512.New())
 	if err != nil {
@@ -100,11 +100,39 @@ func TestBasic(t *testing.T) {
 	}
 }
 
+func TestMarshal(t *testing.T) {
+	chain1 := New(nil)
+	same := []string{
+		"buffer",
+		"buffer2",
+	}
+
+	for _, item := range same {
+		_, err := chain1.Add(bytes.NewBuffer([]byte(item)), sha512.New())
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	chain2, err := NewFromString(chain1.AllSums())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !reflect.DeepEqual(chain1.chain, chain2.chain) {
+		t.Fatal("chains did not match")
+	}
+
+	if !reflect.DeepEqual(chain1.AllSums(), chain2.AllSums()) {
+		t.Fatal("chains did not match")
+	}
+}
+
 func TestMatch(t *testing.T) {
 	sums := []string{}
 
-	chain1 := &Chain{}
-	chain2 := &Chain{}
+	chain1 := New(nil)
+	chain2 := New(nil)
 
 	same := []string{
 		"buffer",
